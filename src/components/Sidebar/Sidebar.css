@@ -5,12 +5,11 @@
 }
 
 .sidebar__header {
-    width: 100%;
     padding: 1.5rem;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    border-right: 1px solid #deded3;
+    border-right: 1px solid #ffffff;
 }
 
 .sidebar__icon {
