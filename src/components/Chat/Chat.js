@@ -4,8 +4,35 @@ import MoreVert from "@material-ui/icons/MoreVert";
 import IconButton from "@material-ui/core/IconButton";
 import React from "react";
 import "./Chat.css";
+import axios from "../../axios";
 
-export default function Chat() {
+export default function Chat({ messages }) {
+  const [input, setInput] = React.useState("");
+  const sendMessage = async (e) => {
+    e.preventDefault();
+    await axios.post("/messages/new", {
+      message: input,
+      name: "John",
+      timestamp: "Just now",
+      received: false,
+    });
+    setInput("");
+  };
+
+  const messagesBottom = React.useRef(null);
+
+  const scrollToBottom = () => {
+    messagesBottom.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "end",
+      inline: "nearest",
+    });
+  };
+
+  React.useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
   return (
     <div className="chat">
       <div className="chat__header">
@@ -29,45 +56,32 @@ export default function Chat() {
       </div>
 
       <div className="chat__body">
-        <p className="chat__message">
-          <span className="chat__name">Damian</span>
-          This is a message
-          <span className="chat__timestamp">{new Date().toUTCString()}</span>
-        </p>
-
-        <p className="chat__message chat__reciever">
-          <span className="chat__name">Damian</span>
-          This is a message
-          <span className="chat__timestamp">{new Date().toUTCString()}</span>
-        </p>
-
-        <p className="chat__message">
-          <span className="chat__name">Damian</span>
-          This is a message
-          <span className="chat__timestamp">{new Date().toUTCString()}</span>
-        </p>
-        <p className="chat__message">
-          <span className="chat__name">Damian</span>
-          Lorem ipsum dolor sit amet, consectetur adip Duis excepteur culpa aute
-          proident tempor commodo nisi consequat duis magna qui reprehenderit
-          ad. In commodo ex Lorem labore ut. Cillum occaecat excepteur nisi ut
-          aliqua quis ad commodo irure Lorem nisi sint est. Nostrud dolore
-          pariatur occaecat anim qui laborum commodo. Do ipsum id aliquip
-          excepteur est voluptate.
-          <span className="chat__timestamp">{new Date().toUTCString()}</span>
-        </p>
-        <p className="chat__message chat__reciever">
-          <span className="chat__name">Damian</span>
-          Ok
-          <span className="chat__timestamp">{new Date().toUTCString()}</span>
-        </p>
+        {messages.map(({ name, message, timestamp, received }) => {
+          return (
+            <div>
+              <p className={`chat__message ${received && "chat__received"} `}>
+                <span className="chat__name">{name}</span>
+                {message}
+                <span className="chat__timestamp">{timestamp}</span>
+              </p>
+              <div ref={messagesBottom} />
+            </div>
+          );
+        })}
       </div>
 
       <div className="chat__footer">
-          <InsertEmoticon className="red" />
+        <InsertEmoticon className="red" />
         <form>
-          <input type="text" placeholder="Type a message" />
-          <button type="submit">Send a message</button>
+          <input
+            type="text"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            placeholder="Type a message"
+          />
+          <button onClick={sendMessage} type="submit">
+            Send a message
+          </button>
         </form>
       </div>
     </div>

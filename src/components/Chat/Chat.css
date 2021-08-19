@@ -56,7 +56,7 @@
     font-size: small;
 }
 
-.chat__reciever {
+.chat__received {
     margin-left:auto;
     background-color: rgb(123, 196, 126);
 }
